@@ -100,7 +100,7 @@ READ_ADD:begin
         shift_counter<=10;
     end
     else begin
-        rx_data_tmp[shift_counter-1]<=MOSI;
+        rx_data_tmp<={MOSI,rx_data_tmp[9:1]};
         shift_counter<=shift_counter-1;
     end
 end
@@ -111,7 +111,7 @@ READ_DATA:begin
         rx_valid_tmp<=1;
     end
     else if ((shift_counter>0)&&(!(read_state))) begin
-         rx_data_tmp[shift_counter-1]<=MOSI;
+        rx_data_tmp<={MOSI,rx_data_tmp[9:1]};
          shift_counter<=shift_counter-1; 
     end
     else if ((shift_counter==0)&&(read_state)) begin
@@ -127,7 +127,7 @@ WRITE:begin
         rx_valid_tmp<=1;
     end
     else begin
-        rx_data_tmp[shift_counter-1]<=MOSI;
+        rx_data_tmp<={MOSI,rx_data_tmp[9:1]};
         shift_counter<=shift_counter-1;
     end
 end
@@ -140,6 +140,9 @@ always @(posedge clk or negedge rst_n) begin
     end
     else begin
         case (cs)
+        IDLE:begin
+            read_state<=0;
+        end
             READ_ADD:begin
                 if(shift_counter==0) begin
                     state<=1;
