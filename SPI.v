@@ -13,7 +13,7 @@ output [9:0] rx_data;
 reg rx_valid_tmp,MISO_tmp;
 reg [9:0] rx_data_tmp;
 //the state carrying regs
-reg [2:0] cs,ns;
+state cs,ns;
 //a signal holding whether the state is reading address or reading data
 reg state;
 //implementing the state memory
@@ -106,20 +106,20 @@ READ_ADD:begin
 end
 READ_DATA:begin
     if((shift_counter==0)&&(!(read_state))) begin
-        rx_data_tmp<=1;
         shift_counter<=8;
         rx_valid_tmp<=1;
     end
     else if ((shift_counter>0)&&(!(read_state))) begin
-        rx_data_tmp<={MOSI,rx_data_tmp[9:1]};
-         shift_counter<=shift_counter-1; 
+         rx_data_tmp<={MOSI,rx_data_tmp[9:1]};
+         shift_counter<=shift_counter-1;  rx_valid_tmp<=0;
     end
     else if ((shift_counter==0)&&(read_state)) begin
         shift_counter<=10;
+        rx_valid_tmp<=0;
     end
     else if (tx_valid) begin
         MISO_tmp<=tx_data[shift_counter-1];
-        shift_counter<=shift_counter-1;
+        shift_counter<=shift_counter-1; rx_valid_tmp<=0;
     end
     end
 WRITE:begin
