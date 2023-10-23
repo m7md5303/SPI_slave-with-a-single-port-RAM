@@ -22,15 +22,12 @@ always @(posedge clk or negedge rst_n) begin
     else begin if(rx_valid) begin case (din[9:8])
         2'b00:begin
             address_holder<=din[7:0];
-            tx_valid<=0;
         end
         2'b01:begin
           mem [address_holder]<=din[7:0];  
-          tx_valid<=0;
         end
         2'b10:begin
             address_holder<=din [7:0];
-            tx_valid<=0;
         end
         2'b11:begin
             dout_tmp<=mem[address_holder];
