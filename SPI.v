@@ -13,7 +13,7 @@ output [9:0] rx_data;
 reg rx_valid_tmp,MISO_tmp;
 reg [9:0] rx_data_tmp;
 //the state carrying regs
-state cs,ns;
+reg [2:0] cs,ns;
 //a signal holding whether the state is reading address or reading data
 reg state;
 //implementing the state memory
@@ -154,6 +154,7 @@ always @(posedge clk or negedge rst_n) begin
              end
              else if ((shift_counter==0)&&(read_state)) begin
                 read_state<=0;
+                state<=0;
              end
            end
         endcase
